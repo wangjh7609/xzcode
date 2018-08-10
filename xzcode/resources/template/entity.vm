@@ -1,0 +1,25 @@
+package ${entityPackageName};
+
+
+/**
+* 配置功能javaBean
+*
+* @author $user on $currTime
+*/
+public class ${entityClassName}Bean {
+
+#foreach($field in $fields)
+    /** $field.fieldDesc */
+    private String $field.fieldName_lower;
+#end
+#foreach($field in $fields)
+
+    public String get${field.fieldName_upper}() {
+        return $field.fieldName_lower;
+    }
+
+    public void set${field.fieldName_upper}(String $field.fieldName_lower ) {
+        this.$field.fieldName_lower = $field.fieldName_lower;
+    }
+#end
+}

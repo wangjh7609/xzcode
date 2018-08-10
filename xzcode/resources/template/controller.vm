@@ -1,0 +1,97 @@
+package ${controllerPackageName};
+
+import com.yinhai.sysframework.dto.ParamDTO;
+import com.yinhai.webframework.BaseAction;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import javax.annotation.Resource;
+import java.util.Map;
+
+import ${servicePackageName}.${serviceClassName}Service;
+
+/**
+* ${tableDesc}管理
+* @version 1.0
+* @author $user $currTime
+*/
+@Controller
+@RequestMapping("${controllerClassName_lower}")
+public class ${controllerClassName}Controller extends BaseAction{
+    @Resource(name = "${serviceClassName_lower}Service")
+    private ${serviceClassName}Service ${serviceClassName_lower}Service;
+
+    /**
+    * 主页面入口，用于菜单配置
+    * @return 页面
+    */
+    @RequestMapping("toMain.do")
+    public String toMain(){
+        return "/${jspPathName}/${tableName}_list";
+    }
+
+    /**
+    * 分页查询
+    * @return 向页面返回查询结果
+    */
+    @RequestMapping("toMain!queryList.do")
+    public String queryList(){
+        ParamDTO dto = getDto();
+        setList("${tableName}_dg",${serviceClassName_lower}Service.queryList(dto));
+        return JSON;
+    }
+
+    /**
+    * 跳转到编辑页面，用于数据新增和修改
+    * @return 要更新的数据
+    */
+    @RequestMapping("toMain!toEdit.do")
+    public String toEdit(){
+        ParamDTO dto = getDto();
+        Object object = getDao().queryForObject("${xmlNameSpace}.query${className}ById",dto);
+        if (object!=null){
+            setData((Map<String, Object>) object,true);
+        }
+        return "/${jspPathName}/${tableName}_edit";
+    }
+
+    /**
+    * 新增数据
+    * @return 是否成功
+    */
+    @RequestMapping("toMain!addData.do")
+    public String addData(){
+        ParamDTO dto = getDto();
+        ${serviceClassName_lower}Service.saveData(dto);
+        setMsg("新增成功！");
+        return JSON;
+    }
+
+    /**
+    * 更新数据
+    * @return 是否成功
+    */
+    @RequestMapping("toMain!updateData.do")
+    public String updateData(){
+        ParamDTO dto = getDto();
+        if (${serviceClassName_lower}Service.updateData(dto)==0){
+            setMsg("更新失败！","warning");
+            setSuccess(false);
+        }else {
+            setMsg("更新成功！");
+        }
+        return JSON;
+    }
+
+    /**
+    * 逻辑删除数据
+    * @return 是否成功
+    */
+    @RequestMapping("toMain!removeData.do")
+    public String removeData(){
+        ParamDTO dto = getDto();
+        ${serviceClassName_lower}Service.removeData(dto);
+        setMsg("删除成功！");
+        return JSON;
+    }
+
+}

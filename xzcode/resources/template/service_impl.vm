@@ -1,0 +1,91 @@
+package ${servicePackageName}.impl;
+
+import com.yinhai.sysframework.dto.ParamDTO;
+import com.yinhai.sysframework.exception.AppException;
+import com.yinhai.sysframework.persistence.PageBean;
+import com.yinhai.sysframework.service.BaseService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.Arrays;
+import java.util.List;
+
+import ${servicePackageName}.${serviceClassName}Service;
+
+/**
+* ${tableDesc}管理功能实现类
+* @version 1.0 ${currTime}
+* @author ${user}
+*/
+@Service("${serviceClassName_lower}Service")
+@Transactional(rollbackFor = Exception.class)
+public class ${serviceClassName}ServiceImpl extends BaseService implements ${serviceClassName}Service{
+
+    /**
+    * 列表数据查询
+    * @param dto 查询条件
+    * @return 分页结果
+    */
+    @Override
+    public PageBean queryList(ParamDTO dto) {
+        //如果有特殊处理请在这里添加代码
+        //分页查询时只在第一页时查询总数，其他页都不再查询总数
+        Integer start = dto.getStart("${tableName}_dg");
+        Integer limit = dto.getLimit("${tableName}_dg");
+        PageBean pageBean;
+        if (start<=1){
+            pageBean = dao.queryForPageWithCount("${tableName}_dg","${xmlNameSpace}.query${className}List",dto,dto);
+        }else{
+            pageBean = new PageBean();
+            pageBean.setLimit(limit);
+            pageBean.setGridId("${tableName}_dg");
+            pageBean.setStart(start);
+            List list = dao.queryForPage("${tableName}_dg","${xmlNameSpace}.query${className}List",dto);
+            pageBean.setList(list);
+        }
+        return pageBean;
+    }
+
+    /**
+    * 新增数据
+    * @param dto 新增数据
+    */
+    @Override
+    public void saveData(ParamDTO dto) {
+        //开发人员这里应该进行调整，增加序列获取，增加登录用户操作时间的处理等，增加有效标识等
+#foreach($field in $fields)
+#if($field.isPK)
+        dto.put("${field.fieldName}",getSequence("$!{sequenceNameField}"));
+#end
+#end
+        dao.insert("${xmlNameSpace}.insert${className}",dto);
+    }
+
+    /**
+    * 单条更新数据
+    * @param dto 新数据及更新条件
+    * @return 成功条数
+    */
+    @Override
+    public int updateData(ParamDTO dto) {
+        //开发人员这里应该进行调整，增加更新人和更新时间等
+        int n = dao.update("${xmlNameSpace}.update${className}ById",dto);
+        if (n>1){
+            throw new AppException("数据更新异常");
+        }
+        return n;
+    }
+
+    /**
+    * 逻辑删除数据
+    * @param dto 删除条件
+    * @return 成功条数
+    */
+    @Override
+    public int removeData(ParamDTO dto) {
+        String[] deleteIds = dto.getAsString("delete_ids").split(",");
+        List<String> list = Arrays.asList(deleteIds);
+        dto.put("deleteList",list);
+        //暂只支持单条数据删除，若要进行批量删除，请在此处添加业务代码
+        return dao.update("${xmlNameSpace}.delete${className}ById",dto);
+    }
+}

@@ -1,0 +1,46 @@
+<idea-plugin version="2">
+  <id>com.yinhai.xzcode</id>
+  <name>兴政代码生成插件</name>
+  <version>1.0</version>
+  <vendor email="wangjh@yinhai.com" url="http://www.yinhai.com">银海软件</vendor>
+
+  <description><![CDATA[
+      通过velocity模板，生成基于银海taCloud框架的功能代码.<br>
+      <em>模板可自行扩展</em>
+    ]]></description>
+
+  <change-notes><![CDATA[
+      完成初版.<br>
+      <em>持续优化完善中...</em>
+    ]]>
+  </change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="141.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+  <application-components>
+  <!-- Add your application components here -->
+    <component>
+      <implementation-class>com.yinhai.xzcode.component.CodeCreatorComponent</implementation-class>
+    </component>
+</application-components>
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable instance="com.yinhai.xzcode.component.CodeSettingComponent"/>
+    <!--<applicationService serviceInterface="com.intellij.ide.util.PropertiesComponent"-->
+                        <!--serviceImplementation="com.intellij.ide.util.ProjectPropertiesComponentImpl"/>-->
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+    <action id="xzCodesetting" class="com.yinhai.xzcode.action.CodeCreatorAction" text="兴政代码生成器"
+            description="代码生成器连接配置">
+      <add-to-group group-id="WindowMenu" anchor="first"/>
+    </action>
+  </actions>
+
+</idea-plugin>

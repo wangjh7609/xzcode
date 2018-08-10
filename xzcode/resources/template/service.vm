@@ -1,0 +1,40 @@
+package $!{servicePackageName};
+
+import com.yinhai.sysframework.dto.ParamDTO;
+import com.yinhai.sysframework.persistence.PageBean;
+import com.yinhai.sysframework.service.Service;
+
+/**
+* $!{tableName}管理功能接口
+* @version 1.0 $!{currTime}
+* @author $!user
+*/
+public interface $!{serviceClassName}Service extends Service{
+    /**
+    * 列表数据查询
+    * @param dto 查询条件
+    * @return 分页结果
+    */
+    PageBean queryList(ParamDTO dto);
+
+    /**
+    * 新增数据
+    * @param dto 新增数据
+    */
+    void saveData(ParamDTO dto);
+
+    /**
+    * 更新数据
+    * @param dto 新数据及更新条件
+    * @return 成功条数
+    */
+    int updateData(ParamDTO dto);
+
+    /**
+    * 删除数据
+    * @param dto 删除条件
+    * @return 成功条数
+    */
+    int removeData(ParamDTO dto);
+
+}

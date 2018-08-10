@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="$xmlNameSpace">
+    <!-- $currTime 通过xzcode自动代码插件生成，创建人：$user -->
+    <!-- 列表查询：$tableDesc -->
+    <select id = "query${className}List"  parameterType="map" resultType="map">
+        select
+#foreach($field in $fields)
+            $field.fieldName #if($velocityHasNext),#end $field.blankSpace<!-- $field.fieldDesc -->
+#end
+        from $tableName
+       where 1=1
+#if("$!{validFlagField}"!="")
+            and ${validFlagField} = '${validFlagFieldValue}'
+#end
+#foreach($field in $fields)
+        <if test="$field.fieldName != '' and $field.fieldName != null" >
+                and $field.fieldName = #{$field.fieldName}
+        </if>
+#end
+    </select>
+    <!-- 主键查询：$tableDesc -->
+    <select id = "query${className}ById"  parameterType="map" resultType="map">
+        select
+#foreach($field in $fields)
+            $field.fieldName #if($velocityHasNext),#end $field.blankSpace<!-- $field.fieldDesc -->
+#end
+        from $tableName
+        where 1=1
+#foreach($field in $fields)
+#if($field.isPK)
+          and $field.fieldName = #{$field.fieldName}
+#end
+#end
+    </select>
+    <!-- 数据插入：$tableDesc -->
+    <insert id = "insert${className}"  parameterType="map">
+        insert into $tableName (
+#foreach($field in $fields)
+            $field.fieldName #if($velocityHasNext),#end $field.blankSpace<!-- $field.fieldDesc -->
+#end
+        )
+        values(
+#foreach($field in $fields)
+#if("$!{field.fieldName}"=="$!{validFlagField}")
+            '$!{validFlagFieldValue}' #if($velocityHasNext),#end $field.blankSpace<!-- $field.fieldDesc -->
+#else
+            #{${field.fieldName}} #if($velocityHasNext),#end $field.blankSpace<!-- $field.fieldDesc -->
+#end
+
+#end
+        )
+    </insert>
+    <!-- 数据更新：$tableDesc -->
+    <update id="update${className}ById" parameterType="map">
+        update $tableName set
+#foreach($field in $fields)
+#if(!$field.isPK)
+            ${field.fieldName} = #{${field.fieldName}} #if($velocityHasNext),#end $field.blankSpace2<!-- $field.fieldDesc -->
+#end
+#end
+        where 1=1
+#foreach($field in $fields)
+#if($field.isPK)
+        and $field.fieldName = #{$field.fieldName}
+#end
+#end
+    </update>
+    <!-- 逻辑删除：$tableDesc -->
+    <update id="delete${className}ById" parameterType="map">
+        update $tableName set $validFlagField ='${validFlagFieldNoValue}'
+        where 1=1
+#foreach($field in $fields)
+#if($field.isPK)
+        and $field.fieldName in
+        <foreach collection="deleteList" item="item" open="(" separator="," close=")">
+            '${item}'
+        </foreach>
+#end
+#end
+    </update>
+</mapper>
